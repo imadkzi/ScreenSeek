@@ -21,7 +21,6 @@ export const NavBar = () => {
 
   const navLinks = [
     { path: "/", label: "Home" },
-    { path: "/now-playing", label: "Now Playing" },
     { path: "/top-rated", label: "Top Rated" },
     { path: "/popular", label: "Popular" },
     { path: "/watchlist", label: "Watchlist" },

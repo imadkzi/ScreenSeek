@@ -6,7 +6,6 @@ import { Home } from "./Pages/Home";
 import { Trending } from "./Pages/Trending";
 import { MostPopular } from "./Pages/MostPopular";
 import { Upcoming } from "./Pages/Upcoming";
-import { NowPlaying } from "./Pages/NowPlaying";
 import { TopRated } from "./Pages/TopRated";
 import { Search } from "./Pages/Search";
 import { FilmPage } from "./Pages/FilmPage";
@@ -29,7 +28,6 @@ function App() {
             <Route path="/trending" element={<Trending />} />
             <Route path="/popular" element={<MostPopular />} />
             <Route path="/upcoming" element={<Upcoming />} />
-            <Route path="/now-playing" element={<NowPlaying />} />
             <Route path="/top-rated" element={<TopRated />} />
             <Route path="/watchlist" element={<WatchList />} />
             <Route path="/favourites" element={<Favourites />} />

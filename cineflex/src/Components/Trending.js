@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ScrollCard } from "./ScrollCard";
+import { MoviePosterCard } from "./MoviePosterCard";
 
 export const Trending = () => {
   const [trending, setTrending] = useState([]);
@@ -31,7 +31,7 @@ export const Trending = () => {
       {trending && (
         <div className="scroller">
           {trending.slice(0, 15).map((movie) => (
-            <ScrollCard movie={movie} key={movie.id} />
+            <MoviePosterCard movie={movie} key={movie.id} />
           ))}
         </div>
       )}

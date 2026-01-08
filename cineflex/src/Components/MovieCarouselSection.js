@@ -4,7 +4,7 @@ import { Navigation } from "swiper/modules";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
-import { ScrollCard } from "./ScrollCard";
+import { MoviePosterCard } from "./MoviePosterCard";
 
 export const MovieCarouselSection = ({ title, movies, seeAllLink }) => {
   if (!movies || movies.length === 0) return null;
@@ -51,7 +51,7 @@ export const MovieCarouselSection = ({ title, movies, seeAllLink }) => {
       >
         {movies.map((movie) => (
           <SwiperSlide key={movie.id}>
-            <ScrollCard movie={movie} />
+            <MoviePosterCard movie={movie} />
           </SwiperSlide>
         ))}
       </Swiper>

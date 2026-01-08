@@ -22,11 +22,12 @@ export const MovieCardSmall = ({ movie, type }) => {
               className="poster"
               src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
               alt={movie.title}
+              loading="lazy"
             />
           </Link>
         ) : (
           <Link to={`/film/${movie.id}`} className="hidden-link">
-            <img className="poster" src={placeholder} alt={movie.title} />
+            <img className="poster" src={placeholder} alt={movie.title} loading="lazy" />
           </Link>
         )}
       </div>

@@ -1,95 +1,40 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlay } from "@fortawesome/free-solid-svg-icons";
+import { faInfoCircle, faTv } from "@fortawesome/free-solid-svg-icons";
 import { MovieCarouselSection } from "../Components/MovieCarouselSection";
+import {
+  useFeaturedMovie,
+  useTrendingMovies,
+  useUpcomingMovies,
+  useTopRatedMovies,
+} from "../hooks/useMovies";
 
 export const Home = () => {
-  const [featured, setFeatured] = useState(null);
-  const [trending, setTrending] = useState([]);
-  const [nowPlaying, setNowPlaying] = useState([]);
-  const [upcoming, setUpcoming] = useState([]);
-  const [topRated, setTopRated] = useState([]);
+  const [showWatchProviders, setShowWatchProviders] = useState(false);
 
-  // Fetch featured movie (first from trending)
-  useEffect(() => {
-    fetch(
-      `https://api.themoviedb.org/3/trending/movie/day?api_key=${process.env.REACT_APP_TMDB_KEY}&language=en-US`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data.errors && data.results?.length > 0) {
-          setFeatured(data.results[0]);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching featured movie:", error);
-      });
-  }, []);
+  // Fetch all movie data using custom hooks
+  const { movie: featured, watchProviders } = useFeaturedMovie();
+  const { movies: trending } = useTrendingMovies("week", 20);
+  const { movies: upcoming } = useUpcomingMovies(20);
+  const { movies: topRated } = useTopRatedMovies(20);
 
-  // Fetch trending
+  // Close dropdown when clicking outside
   useEffect(() => {
-    fetch(
-      `https://api.themoviedb.org/3/trending/movie/week?api_key=${process.env.REACT_APP_TMDB_KEY}&language=en-US&page=1`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data.errors) {
-          setTrending(data.results.slice(0, 20));
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching trending:", error);
-      });
-  }, []);
+    const handleClickOutside = (event) => {
+      if (
+        showWatchProviders &&
+        !event.target.closest(".watch-providers-dropdown")
+      ) {
+        setShowWatchProviders(false);
+      }
+    };
 
-  // Fetch now playing
-  useEffect(() => {
-    fetch(
-      `https://api.themoviedb.org/3/movie/now_playing?api_key=${process.env.REACT_APP_TMDB_KEY}&language=en-US&page=1&region=GB`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data.errors) {
-          setNowPlaying(data.results.slice(0, 20));
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching now playing:", error);
-      });
-  }, []);
-
-  // Fetch upcoming
-  useEffect(() => {
-    fetch(
-      `https://api.themoviedb.org/3/movie/upcoming?api_key=${process.env.REACT_APP_TMDB_KEY}&language=en-US&page=1&region=GB`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data.errors) {
-          setUpcoming(data.results.slice(0, 20));
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching upcoming:", error);
-      });
-  }, []);
-
-  // Fetch top rated
-  useEffect(() => {
-    fetch(
-      `https://api.themoviedb.org/3/movie/top_rated?api_key=${process.env.REACT_APP_TMDB_KEY}&language=en-US&page=1`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data.errors) {
-          setTopRated(data.results.slice(0, 20));
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching top rated:", error);
-      });
-  }, []);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showWatchProviders]);
 
   return (
     <div className="min-h-screen">
@@ -105,7 +50,7 @@ export const Home = () => {
             <div className="absolute inset-0 bg-gradient-to-t from-space-gray via-space-gray/80 to-transparent" />
           </div>
 
-          <div className="relative z-10 w-full pb-16">
+          <div className="relative z-10 w-full pb-4">
             <div className="max-w-2xl">
               <h1 className="text-5xl md:text-7xl font-semibold mb-4 tracking-tight text-white">
                 {featured.title}
@@ -113,19 +58,136 @@ export const Home = () => {
               <p className="text-lg md:text-xl text-gray-300 mb-6 line-clamp-3">
                 {featured.overview}
               </p>
-              <div className="flex gap-4">
+              <div className="flex gap-3 flex-wrap relative">
+                {/* Watch Provider Button */}
+                {watchProviders.flatrate.length > 0 ||
+                watchProviders.rent.length > 0 ||
+                watchProviders.buy.length > 0 ? (
+                  <div className="relative watch-providers-dropdown">
+                    <button
+                      onClick={() => setShowWatchProviders(!showWatchProviders)}
+                      className="px-6 py-2.5 rounded-full flex items-center gap-2 hover:opacity-90 transition-all duration-300 text-white bg-accent border border-accent/50 shadow-lg"
+                    >
+                      <FontAwesomeIcon icon={faTv} className="w-3.5 h-3.5" />
+                      <span className="font-medium text-sm">Watch Now</span>
+                    </button>
+
+                    {/* Watch Providers Dropdown */}
+                    {showWatchProviders && (
+                      <div className="absolute top-full left-0 mt-2 glass rounded-xl p-4 min-w-[280px] backdrop-blur-md border border-white/20 shadow-2xl z-40">
+                        <div className="space-y-4">
+                          {/* Streaming (Flatrate) */}
+                          {watchProviders.flatrate.length > 0 && (
+                            <div>
+                              <h4 className="text-xs font-semibold text-gray-400 uppercase mb-2">
+                                Stream
+                              </h4>
+                              <div className="flex flex-wrap gap-3">
+                                {watchProviders.flatrate.map((provider) => (
+                                  <a
+                                    key={provider.provider_id}
+                                    href={`https://www.themoviedb.org/movie/${featured.id}/watch`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-2 glass px-3 py-2 rounded-lg hover:bg-white/20 transition-colors"
+                                  >
+                                    <img
+                                      src={`https://image.tmdb.org/t/p/original/${provider.logo_path}`}
+                                      alt={provider.provider_name}
+                                      className="h-6 w-auto object-contain"
+                                      loading="lazy"
+                                    />
+                                    <span className="text-xs text-white">
+                                      {provider.provider_name}
+                                    </span>
+                                  </a>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Rent */}
+                          {watchProviders.rent.length > 0 && (
+                            <div>
+                              <h4 className="text-xs font-semibold text-gray-400 uppercase mb-2">
+                                Rent
+                              </h4>
+                              <div className="flex flex-wrap gap-3">
+                                {watchProviders.rent.map((provider) => (
+                                  <a
+                                    key={provider.provider_id}
+                                    href={`https://www.themoviedb.org/movie/${featured.id}/watch`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-2 glass px-3 py-2 rounded-lg hover:bg-white/20 transition-colors"
+                                  >
+                                    <img
+                                      src={`https://image.tmdb.org/t/p/original/${provider.logo_path}`}
+                                      alt={provider.provider_name}
+                                      className="h-6 w-auto object-contain"
+                                      loading="lazy"
+                                    />
+                                    <span className="text-xs text-white">
+                                      {provider.provider_name}
+                                    </span>
+                                  </a>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Buy */}
+                          {watchProviders.buy.length > 0 && (
+                            <div>
+                              <h4 className="text-xs font-semibold text-gray-400 uppercase mb-2">
+                                Buy
+                              </h4>
+                              <div className="flex flex-wrap gap-3">
+                                {watchProviders.buy.map((provider) => (
+                                  <a
+                                    key={provider.provider_id}
+                                    href={`https://www.themoviedb.org/movie/${featured.id}/watch`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-2 glass px-3 py-2 rounded-lg hover:bg-white/20 transition-colors"
+                                  >
+                                    <img
+                                      src={`https://image.tmdb.org/t/p/original/${provider.logo_path}`}
+                                      alt={provider.provider_name}
+                                      className="h-6 w-auto object-contain"
+                                      loading="lazy"
+                                    />
+                                    <span className="text-xs text-white">
+                                      {provider.provider_name}
+                                    </span>
+                                  </a>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <Link
+                    to={`/film/${featured.id}`}
+                    className="px-6 py-2.5 rounded-full flex items-center gap-2 hover:opacity-90 transition-all duration-300 text-white bg-accent border border-accent/50 shadow-lg"
+                  >
+                    <FontAwesomeIcon icon={faTv} className="w-3.5 h-3.5" />
+                    <span className="font-medium text-sm">Watch Now</span>
+                  </Link>
+                )}
+                {/* Learn More Button */}
                 <Link
                   to={`/film/${featured.id}`}
-                  className="glass px-8 py-4 rounded-full flex items-center gap-2 hover:bg-white/20 transition-all duration-300 group text-white"
+                  className="px-6 py-2.5 rounded-full flex items-center gap-2 hover:bg-white/5 transition-all duration-300 text-white border border-white/20 hover:border-white/30 bg-transparent"
                 >
-                  <FontAwesomeIcon icon={faPlay} className="w-4 h-4" />
-                  <span className="font-medium">Watch Now</span>
-                </Link>
-                <Link
-                  to={`/film/${featured.id}`}
-                  className="glass px-8 py-4 rounded-full hover:bg-white/20 transition-all duration-300 text-white"
-                >
-                  <span className="font-medium">Learn More</span>
+                  <FontAwesomeIcon
+                    icon={faInfoCircle}
+                    className="w-3.5 h-3.5"
+                  />
+                  <span className="font-medium text-sm">Learn More</span>
                 </Link>
               </div>
             </div>
@@ -139,11 +201,6 @@ export const Home = () => {
           title="Trending Now"
           movies={trending}
           seeAllLink="/trending"
-        />
-        <MovieCarouselSection
-          title="Now Playing"
-          movies={nowPlaying}
-          seeAllLink="/now-playing"
         />
         <MovieCarouselSection
           title="Coming Soon"

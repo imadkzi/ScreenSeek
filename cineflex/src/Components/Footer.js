@@ -5,8 +5,18 @@ import logo from "../Assets/logo-white.svg";
 export const Footer = () => {
   return (
     <div className="footer center font-small py-4">
-      <img className="footer__logo" src={logo} alt="CINEFLEX logo"></img>
-      <img className="footer__logo" src={tmdb} alt="The Movie DB Logo"></img>
+      <img
+        className="footer__logo"
+        src={logo}
+        alt="CINEFLEX logo"
+        loading="lazy"
+      ></img>
+      <img
+        className="footer__logo"
+        src={tmdb}
+        alt="The Movie DB Logo"
+        loading="lazy"
+      ></img>
       <div className="footer__copyright center text-center">
         © 2024 Copyright:
         <p> Imad Kazi</p>

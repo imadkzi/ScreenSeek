@@ -83,28 +83,43 @@
   .movie-swiper .swiper-button-next,
   .movie-swiper .swiper-button-prev {
     color: white;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.25);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    width: 44px;
-    height: 44px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
   }
   
   .movie-swiper .swiper-button-next:after,
   .movie-swiper .swiper-button-prev:after {
-    font-size: 18px;
-    font-weight: 700;
+    font-size: 22px;
+    font-weight: 900;
   }
   
   .movie-swiper .swiper-button-next:hover,
   .movie-swiper .swiper-button-prev:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.4);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.1);
+    box-shadow: 0 6px 24px 0 rgba(0, 0, 0, 0.5);
   }
   
   .movie-swiper .swiper-button-disabled {
-    opacity: 0.3;
+    opacity: 0.2;
+  }
+  
+  /* Hero Play Button */
+  .hero-play-button {
+    opacity: 0 !important;
+    transition: opacity 0.3s ease, transform 0.3s ease !important;
+  }
+  
+  .group:hover .hero-play-button {
+    opacity: 1 !important;
+    transform: scale(1.1) !important;
   }
 }

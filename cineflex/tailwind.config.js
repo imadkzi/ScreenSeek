@@ -10,6 +10,7 @@ module.exports = {
         "space-gray-dark": "#1c1c1e",
         "apple-glass": "rgba(255, 255, 255, 0.2)",
         "apple-glass-dark": "rgba(0, 0, 0, 0.15)",
+        accent: "#007AFF", // Apple blue accent
       },
       backdropBlur: {
         glass: "20px",

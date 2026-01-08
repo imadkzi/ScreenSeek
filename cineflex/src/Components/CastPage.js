@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { ScrollCard } from "./ScrollCard";
+import { MoviePosterCard } from "./MoviePosterCard";
 import placeholder from "../Assets/Cast-P.png";
 
 export const CastPage = () => {
@@ -34,9 +34,15 @@ export const CastPage = () => {
               className="poster"
               src={`https://image.tmdb.org/t/p/w300/${person.profile_path}`}
               alt={person.name}
+              loading="lazy"
             />
           ) : (
-            <img className="poster" src={placeholder} alt={person.name} />
+            <img
+              className="poster"
+              src={placeholder}
+              alt={person.name}
+              loading="lazy"
+            />
           )}
         </div>
         <div className="person-info__details center">
@@ -64,7 +70,7 @@ export const CastPage = () => {
             {credits && (
               <div className="scroller">
                 {credits.slice(0, 20).map((movie) => (
-                  <ScrollCard movie={movie} key={movie.id} />
+                  <MoviePosterCard movie={movie} key={movie.id} />
                 ))}
               </div>
             )}
