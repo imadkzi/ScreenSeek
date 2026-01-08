@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Swiper Styles */
+@import 'swiper/css';
+@import 'swiper/css/navigation';
+@import 'swiper/css/pagination';
+
+@layer base {
+  body {
+    @apply bg-space-gray text-white;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    padding-top: 5rem; /* Space for fixed navbar */
+  }
+  
+  @media (min-width: 1024px) {
+    body {
+      padding-top: 6rem;
+    }
+  }
+}
+
+@layer components {
+  .glass {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+  }
+  
+  .glass-dark {
+    background: rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .container-apple {
+    @apply max-w-[1920px] mx-auto px-6 sm:px-8 lg:px-12;
+  }
+  
+  .section-spacing {
+    @apply py-8 md:py-10 lg:py-12;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  /* Swiper Custom Styles */
+  .movie-swiper {
+    padding-bottom: 2rem;
+    padding-top: 0.5rem;
+  }
+  
+  .movie-swiper .swiper-slide {
+    height: auto;
+    padding-top: 0.5rem;
+    display: flex;
+    align-items: flex-start;
+  }
+  
+  .movie-swiper .swiper-slide > * {
+    width: 100%;
+  }
+  
+  .movie-swiper .swiper-button-next,
+  .movie-swiper .swiper-button-prev {
+    color: white;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.2);
+  }
+  
+  .movie-swiper .swiper-button-next:after,
+  .movie-swiper .swiper-button-prev:after {
+    font-size: 18px;
+    font-weight: 700;
+  }
+  
+  .movie-swiper .swiper-button-next:hover,
+  .movie-swiper .swiper-button-prev:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+  
+  .movie-swiper .swiper-button-disabled {
+    opacity: 0.3;
+  }
+}
