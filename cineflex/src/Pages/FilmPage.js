@@ -183,9 +183,9 @@ export const FilmPage = () => {
       </Helmet>
 
       {/* Hero Section */}
-      <section className="relative h-[85vh] min-h-[600px] flex items-end container-apple section-spacing mt-6">
+      <section className="relative h-[85vh] min-h-[600px] flex items-end container-apple section-spacing">
         <div
-          className="absolute inset-0 rounded-3xl overflow-hidden"
+          className="absolute inset-0 overflow-hidden"
           key={`backdrop-${movie.id}`}
         >
           {/* Placeholder while loading */}

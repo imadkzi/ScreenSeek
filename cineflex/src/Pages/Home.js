@@ -40,9 +40,9 @@ export const Home = () => {
     <div className="min-h-screen">
       {/* Hero Section */}
       {featured && (
-        <section className="relative h-[85vh] min-h-[600px] flex items-end container-apple section-spacing mt-6">
+        <section className="relative h-[85vh] min-h-[600px] flex items-end container-apple section-spacing">
           <div
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat rounded-3xl overflow-hidden"
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat overflow-hidden"
             style={{
               backgroundImage: `url(https://image.tmdb.org/t/p/original/${featured.backdrop_path})`,
             }}
