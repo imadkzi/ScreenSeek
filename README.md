@@ -2,21 +2,22 @@
 
 This project was created by Imad Kazi.
 
-The minified and production build of this site can be found at www.thecineflex.com
+The minified and production build of this site can be found at https://screenseek.netlify.app
 
 ## Requirements
 
 To get started with this project for development view or build compiling please run
 
-### `npm install`, *`npm install react-bootstrap bootstrap`, `npm install react-router-dom`*
+### `npm install`, _`npm install react-bootstrap bootstrap`, `npm install react-router-dom`_
 
-* Note `npm install` should install `react-bootstrap bootstrap` and `react-router-dom`
+- Note `npm install` should install `react-bootstrap bootstrap` and `react-router-dom`
 
 ## Available Scripts
 
 In the project directory, you can run:
 
 ## Getting started with production build
+
 ### `npm run build`
 
 Builds the app for production to the `build` folder.\
@@ -25,11 +26,12 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
-Deploy using 
+Deploy using
 
 ## `serve -s build`
 
 ## Development Build
+
 ### `npm start`
 
 Runs the app in the development mode.\

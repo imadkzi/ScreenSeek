@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   movieAPI,
   organizeWatchProviders,
@@ -6,21 +6,38 @@ import {
   getYouTubeTrailer,
 } from "../services/tmdb";
 
+// Constants
+const INITIAL_LOAD_COUNT = 15;
+const MAX_PAGES = 500;
+
 /**
- * Custom hook for fetching trending movies
+ * Helper function to remove duplicate movies by ID
  */
-export const useTrendingMovies = (timeWindow = "week", limit = null) => {
+const removeDuplicates = (movies) => {
+  const seen = new Set();
+  return movies.filter((movie) => {
+    if (!movie || !movie.id || seen.has(movie.id)) {
+      return false;
+    }
+    seen.add(movie.id);
+    return true;
+  });
+};
+
+/**
+ * Generic hook for fetching movies with a limit
+ */
+const useMoviesWithLimit = (fetchFunction, dependencies = []) => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchTrending = async () => {
+    const fetchMovies = async () => {
       try {
         setLoading(true);
-        const data = await movieAPI.getTrending(timeWindow);
-        const results = limit ? data.results.slice(0, limit) : data.results;
-        setMovies(results);
+        const data = await fetchFunction();
+        setMovies(data.results || []);
         setError(null);
       } catch (err) {
         setError(err.message);
@@ -30,57 +47,80 @@ export const useTrendingMovies = (timeWindow = "week", limit = null) => {
       }
     };
 
-    fetchTrending();
-  }, [timeWindow, limit]);
+    fetchMovies();
+  }, dependencies);
 
   return { movies, loading, error };
+};
+
+/**
+ * Custom hook for fetching trending movies
+ */
+export const useTrendingMovies = (timeWindow = "week", limit = null) => {
+  const { movies, loading, error } = useMoviesWithLimit(
+    () => movieAPI.getTrending(timeWindow),
+    [timeWindow]
+  );
+
+  const limitedMovies = limit ? movies.slice(0, limit) : movies;
+  return { movies: limitedMovies, loading, error };
 };
 
 /**
  * Custom hook for fetching upcoming movies
  */
 export const useUpcomingMovies = (limit = null) => {
-  const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { movies, loading, error } = useMoviesWithLimit(
+    () => movieAPI.getUpcoming(),
+    []
+  );
 
-  useEffect(() => {
-    const fetchUpcoming = async () => {
-      try {
-        setLoading(true);
-        const data = await movieAPI.getUpcoming();
-        const results = limit ? data.results.slice(0, limit) : data.results;
-        setMovies(results);
-        setError(null);
-      } catch (err) {
-        setError(err.message);
-        setMovies([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUpcoming();
-  }, [limit]);
-
-  return { movies, loading, error };
+  const limitedMovies = limit ? movies.slice(0, limit) : movies;
+  return { movies: limitedMovies, loading, error };
 };
 
 /**
  * Custom hook for fetching top rated movies
  */
 export const useTopRatedMovies = (limit = null) => {
+  const { movies, loading, error } = useMoviesWithLimit(
+    () => movieAPI.getTopRated(),
+    []
+  );
+
+  const limitedMovies = limit ? movies.slice(0, limit) : movies;
+  return { movies: limitedMovies, loading, error };
+};
+
+/**
+ * Generic hook for infinite scroll movie fetching
+ */
+const useInfiniteScrollMovies = (
+  fetchInitialFn,
+  fetchPageFn,
+  dependencies = []
+) => {
   const [movies, setMovies] = useState([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState(null);
 
+  // Initial load - show first 15 items
   useEffect(() => {
-    const fetchTopRated = async () => {
+    const fetchInitial = async () => {
       try {
         setLoading(true);
-        const data = await movieAPI.getTopRated();
-        const results = limit ? data.results.slice(0, limit) : data.results;
-        setMovies(results);
+        const data = await fetchInitialFn();
+        const allResults = data.results || [];
+        const initialMovies = allResults.slice(0, INITIAL_LOAD_COUNT);
+
+        setMovies(removeDuplicates(initialMovies));
+        setHasMore(
+          allResults.length >= INITIAL_LOAD_COUNT && data.total_pages > 1
+        );
+        setPage(2);
         setError(null);
       } catch (err) {
         setError(err.message);
@@ -90,10 +130,80 @@ export const useTopRatedMovies = (limit = null) => {
       }
     };
 
-    fetchTopRated();
-  }, [limit]);
+    fetchInitial();
+  }, dependencies);
 
-  return { movies, loading, error };
+  // Load more movies
+  const loadMore = useCallback(async () => {
+    if (loadingMore || !hasMore) return;
+
+    try {
+      setLoadingMore(true);
+      const data = await fetchPageFn(page);
+      const newMovies = data.results || [];
+
+      setMovies((prev) => {
+        const combined = [...prev, ...newMovies];
+        return removeDuplicates(combined);
+      });
+
+      const nextPage = page + 1;
+      const maxPages = Math.min(data.total_pages || 1, MAX_PAGES);
+      setHasMore(nextPage <= maxPages);
+      setPage(nextPage);
+    } catch (err) {
+      console.error("Error loading more movies:", err);
+      setHasMore(false);
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [page, loadingMore, hasMore, fetchPageFn]);
+
+  return { movies, loadMore, hasMore, loading, loadingMore, error };
+};
+
+/**
+ * Custom hook for fetching popular movies with infinite scroll
+ */
+export const usePopularMovies = () => {
+  return useInfiniteScrollMovies(
+    () => movieAPI.getPopular(1),
+    (page) => movieAPI.getPopular(page),
+    []
+  );
+};
+
+/**
+ * Custom hook for fetching trending movies with infinite scroll
+ */
+export const useTrendingMoviesPaginated = (timeWindow = "week") => {
+  return useInfiniteScrollMovies(
+    () => movieAPI.getTrending(timeWindow, 1),
+    (page) => movieAPI.getTrending(timeWindow, page),
+    [timeWindow]
+  );
+};
+
+/**
+ * Custom hook for fetching top rated movies with infinite scroll
+ */
+export const useTopRatedMoviesPaginated = () => {
+  return useInfiniteScrollMovies(
+    () => movieAPI.getTopRated(1),
+    (page) => movieAPI.getTopRated(page),
+    []
+  );
+};
+
+/**
+ * Custom hook for fetching upcoming movies with infinite scroll
+ */
+export const useUpcomingMoviesPaginated = () => {
+  return useInfiniteScrollMovies(
+    () => movieAPI.getUpcoming(1),
+    (page) => movieAPI.getUpcoming(page),
+    []
+  );
 };
 
 /**
@@ -113,7 +223,6 @@ export const useFeaturedMovie = () => {
     const fetchFeatured = async () => {
       try {
         setLoading(true);
-        // Get first trending movie as featured
         const trendingData = await movieAPI.getTrending("day");
 
         if (trendingData.results?.length > 0) {
@@ -146,6 +255,30 @@ export const useFeaturedMovie = () => {
   }, []);
 
   return { movie, watchProviders, loading, error };
+};
+
+/**
+ * Helper function to find high-resolution backdrop
+ */
+const findHighResBackdrop = (backdrops) => {
+  if (!backdrops || backdrops.length === 0) return null;
+
+  const highResBackdrops = backdrops.filter((backdrop) => {
+    const width = backdrop.width;
+    const height = backdrop.height;
+    const aspectRatio = width / height;
+
+    // Check for 16:9 aspect ratio (approximately 1.777)
+    const is16to9 = Math.abs(aspectRatio - 16 / 9) < 0.1;
+    // Check for high resolution (width >= 1920)
+    const isHighRes = width >= 1920;
+
+    return is16to9 && isHighRes;
+  });
+
+  return highResBackdrops.length > 0
+    ? highResBackdrops[0].file_path
+    : backdrops[0].file_path;
 };
 
 /**
@@ -202,32 +335,13 @@ export const useMovieDetails = (movieId) => {
           setTrailerKey(trailer);
         }
 
-        // Fetch images to get alternative backdrop (3840x2160 or similar)
+        // Fetch images to get alternative backdrop
         try {
           const imagesData = await movieAPI.getMovieImages(movieId);
-          if (imagesData.backdrops && imagesData.backdrops.length > 0) {
-            // Filter for high resolution backdrops (3840x2160 or similar 16:9 at high res)
-            // Target: 3840x2160, but also accept 1920x1080, 2560x1440, or any 16:9 ratio >= 1920 width
-            const highResBackdrops = imagesData.backdrops.filter((backdrop) => {
-              const width = backdrop.width;
-              const height = backdrop.height;
-              const aspectRatio = width / height;
-
-              // Check for 16:9 aspect ratio (approximately 1.777)
-              const is16to9 = Math.abs(aspectRatio - 16 / 9) < 0.1;
-
-              // Check for high resolution (width >= 1920, which includes 1920x1080, 2560x1440, 3840x2160)
-              const isHighRes = width >= 1920;
-
-              return is16to9 && isHighRes;
-            });
-
-            if (highResBackdrops.length > 0) {
-              // Use the first high-res backdrop
-              setBackdropImage(highResBackdrops[0].file_path);
-            } else if (imagesData.backdrops.length > 0) {
-              // Fallback to any backdrop if no high-res found
-              setBackdropImage(imagesData.backdrops[0].file_path);
+          if (imagesData.backdrops?.length > 0) {
+            const backdropPath = findHighResBackdrop(imagesData.backdrops);
+            if (backdropPath) {
+              setBackdropImage(backdropPath);
             }
           }
         } catch (imagesError) {
@@ -269,6 +383,94 @@ export const useMovieDetails = (movieId) => {
     certification,
     backdropImage,
     loading,
+    error,
+  };
+};
+
+/**
+ * Custom hook for searching movies with infinite scroll
+ */
+export const useSearchMovies = (query) => {
+  const [movies, setMovies] = useState([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [totalResults, setTotalResults] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Initial load - show first 15 items
+  useEffect(() => {
+    if (!query || query.trim() === "") {
+      setMovies([]);
+      setHasMore(false);
+      setTotalResults(0);
+      setPage(1);
+      setLoading(false);
+      return;
+    }
+
+    const fetchInitial = async () => {
+      try {
+        setLoading(true);
+
+        const data = await movieAPI.searchMovies(query, 1);
+        const allResults = data.results || [];
+        const initialMovies = allResults.slice(0, INITIAL_LOAD_COUNT);
+
+        setMovies(removeDuplicates(initialMovies));
+        setTotalResults(data.total_results || 0);
+        setHasMore(
+          allResults.length >= INITIAL_LOAD_COUNT && data.total_pages > 1
+        );
+        setPage(2);
+        setError(null);
+      } catch (err) {
+        setError(err.message);
+        setMovies([]);
+        setTotalResults(0);
+        setHasMore(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInitial();
+  }, [query]);
+
+  // Load more movies
+  const loadMore = useCallback(async () => {
+    if (loadingMore || !hasMore || !query || query.trim() === "") return;
+
+    try {
+      setLoadingMore(true);
+      const data = await movieAPI.searchMovies(query, page);
+      const newMovies = data.results || [];
+
+      setMovies((prev) => {
+        const combined = [...prev, ...newMovies];
+        return removeDuplicates(combined);
+      });
+
+      const nextPage = page + 1;
+      const maxPages = Math.min(data.total_pages || 1, MAX_PAGES);
+      setHasMore(nextPage <= maxPages);
+      setPage(nextPage);
+    } catch (err) {
+      console.error("Error loading more movies:", err);
+      setHasMore(false);
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [page, loadingMore, hasMore, query]);
+
+  return {
+    movies,
+    loadMore,
+    hasMore,
+    totalResults,
+    loading,
+    loadingMore,
     error,
   };
 };

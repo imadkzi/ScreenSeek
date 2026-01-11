@@ -76,7 +76,7 @@ export const FilmPage = () => {
   return (
     <div>
       <Helmet>
-        <style>{"body { background-color: black; }"}</style>
+        <style>{"body { background-color: #181b1c; }"}</style>
       </Helmet>
       <div
         className="details-container mt"

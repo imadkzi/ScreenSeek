@@ -2,10 +2,10 @@ import React from "react";
 import { Pagination } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
-const cineFlex = createTheme({
+const screenSeek = createTheme({
   palette: {
     primary: {
-      main: "#273963",
+      main: "#3a3a3c",
     },
   },
 });
@@ -18,7 +18,7 @@ export const CustomPagination = ({ setPage, numOfPages = 15 }) => {
 
   return (
     <div className="pagination center">
-      <ThemeProvider theme={cineFlex}>
+      <ThemeProvider theme={screenSeek}>
         <Pagination
           onChange={handlePageChange}
           count={numOfPages}

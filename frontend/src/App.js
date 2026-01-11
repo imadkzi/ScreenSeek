@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { NavBar } from "./Components/NavBar";
+import { ScrollToTop } from "./Components/ScrollToTop";
 import { Home } from "./Pages/Home";
 import { Trending } from "./Pages/Trending";
 import { MostPopular } from "./Pages/MostPopular";
@@ -22,6 +23,7 @@ function App() {
     <HelmetProvider>
       <GlobalProvider>
         <Router>
+          <ScrollToTop />
           <NavBar />
           <Routes>
             <Route path="/" element={<Home />} />

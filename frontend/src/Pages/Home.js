@@ -66,7 +66,7 @@ export const Home = () => {
                   <div className="relative watch-providers-dropdown">
                     <button
                       onClick={() => setShowWatchProviders(!showWatchProviders)}
-                      className="px-6 py-2.5 rounded-full flex items-center gap-2 hover:opacity-90 transition-all duration-300 text-white bg-accent border border-accent/50 shadow-lg"
+                      className="px-6 py-2.5 rounded-full flex items-center gap-2 hover:opacity-90 hover:scale-105 transition-all duration-300 text-white bg-accent border border-accent/50 shadow-lg"
                     >
                       <FontAwesomeIcon icon={faTv} className="w-3.5 h-3.5" />
                       <span className="font-medium text-sm">Watch Now</span>
@@ -172,7 +172,7 @@ export const Home = () => {
                 ) : (
                   <Link
                     to={`/film/${featured.id}`}
-                    className="px-6 py-2.5 rounded-full flex items-center gap-2 hover:opacity-90 transition-all duration-300 text-white bg-accent border border-accent/50 shadow-lg"
+                    className="px-6 py-2.5 rounded-full flex items-center gap-2 hover:opacity-90 hover:scale-105 transition-all duration-300 text-white bg-accent border border-accent/50 shadow-lg"
                   >
                     <FontAwesomeIcon icon={faTv} className="w-3.5 h-3.5" />
                     <span className="font-medium text-sm">Watch Now</span>
@@ -181,7 +181,7 @@ export const Home = () => {
                 {/* Learn More Button */}
                 <Link
                   to={`/film/${featured.id}`}
-                  className="px-6 py-2.5 rounded-full flex items-center gap-2 hover:bg-white/5 transition-all duration-300 text-white border border-white/20 hover:border-white/30 bg-transparent"
+                  className="px-6 py-2.5 rounded-full flex items-center gap-2 hover:bg-accent hover:border-accent hover:scale-105 transition-all duration-300 text-white border border-white/20 bg-transparent shadow-lg hover:shadow-xl"
                 >
                   <FontAwesomeIcon
                     icon={faInfoCircle}

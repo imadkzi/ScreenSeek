@@ -8,7 +8,7 @@ export const Footer = () => {
       <img
         className="footer__logo"
         src={logo}
-        alt="CINEFLEX logo"
+        alt="ScreenSeek logo"
         loading="lazy"
       ></img>
       <img
@@ -18,7 +18,7 @@ export const Footer = () => {
         loading="lazy"
       ></img>
       <div className="footer__copyright center text-center">
-        © 2024 Copyright:
+        © 2026 Copyright:
         <p> Imad Kazi</p>
       </div>
     </div>
