@@ -48,6 +48,7 @@ const useMoviesWithLimit = (fetchFunction, dependencies = []) => {
     };
 
     fetchMovies();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, dependencies);
 
   return { movies, loading, error };
@@ -131,6 +132,7 @@ const useInfiniteScrollMovies = (
     };
 
     fetchInitial();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, dependencies);
 
   // Load more movies
