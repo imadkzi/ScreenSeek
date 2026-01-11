@@ -1,4 +1,4 @@
-# Welcome to CINEFLEX
+# Welcome to ScreenSeek
 
 This project was created by Imad Kazi.
 
