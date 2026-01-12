@@ -1,18 +1,15 @@
 import { useState, useEffect, useCallback } from "react";
 import {
   movieAPI,
+  personAPI,
   organizeWatchProviders,
   getUKCertification,
   getYouTubeTrailer,
 } from "../services/tmdb";
 
-// Constants
 const INITIAL_LOAD_COUNT = 15;
 const MAX_PAGES = 500;
 
-/**
- * Helper function to remove duplicate movies by ID
- */
 const removeDuplicates = (movies) => {
   const seen = new Set();
   return movies.filter((movie) => {
@@ -24,9 +21,6 @@ const removeDuplicates = (movies) => {
   });
 };
 
-/**
- * Generic hook for fetching movies with a limit
- */
 const useMoviesWithLimit = (fetchFunction, dependencies = []) => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -54,9 +48,6 @@ const useMoviesWithLimit = (fetchFunction, dependencies = []) => {
   return { movies, loading, error };
 };
 
-/**
- * Custom hook for fetching trending movies
- */
 export const useTrendingMovies = (timeWindow = "week", limit = null) => {
   const { movies, loading, error } = useMoviesWithLimit(
     () => movieAPI.getTrending(timeWindow),
@@ -67,9 +58,6 @@ export const useTrendingMovies = (timeWindow = "week", limit = null) => {
   return { movies: limitedMovies, loading, error };
 };
 
-/**
- * Custom hook for fetching upcoming movies
- */
 export const useUpcomingMovies = (limit = null) => {
   const { movies, loading, error } = useMoviesWithLimit(
     () => movieAPI.getUpcoming(),
@@ -80,9 +68,6 @@ export const useUpcomingMovies = (limit = null) => {
   return { movies: limitedMovies, loading, error };
 };
 
-/**
- * Custom hook for fetching top rated movies
- */
 export const useTopRatedMovies = (limit = null) => {
   const { movies, loading, error } = useMoviesWithLimit(
     () => movieAPI.getTopRated(),
@@ -93,9 +78,6 @@ export const useTopRatedMovies = (limit = null) => {
   return { movies: limitedMovies, loading, error };
 };
 
-/**
- * Generic hook for infinite scroll movie fetching
- */
 const useInfiniteScrollMovies = (
   fetchInitialFn,
   fetchPageFn,
@@ -135,7 +117,6 @@ const useInfiniteScrollMovies = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, dependencies);
 
-  // Load more movies
   const loadMore = useCallback(async () => {
     if (loadingMore || !hasMore) return;
 
@@ -164,9 +145,6 @@ const useInfiniteScrollMovies = (
   return { movies, loadMore, hasMore, loading, loadingMore, error };
 };
 
-/**
- * Custom hook for fetching popular movies with infinite scroll
- */
 export const usePopularMovies = () => {
   return useInfiniteScrollMovies(
     () => movieAPI.getPopular(1),
@@ -175,9 +153,6 @@ export const usePopularMovies = () => {
   );
 };
 
-/**
- * Custom hook for fetching trending movies with infinite scroll
- */
 export const useTrendingMoviesPaginated = (timeWindow = "week") => {
   return useInfiniteScrollMovies(
     () => movieAPI.getTrending(timeWindow, 1),
@@ -186,9 +161,6 @@ export const useTrendingMoviesPaginated = (timeWindow = "week") => {
   );
 };
 
-/**
- * Custom hook for fetching top rated movies with infinite scroll
- */
 export const useTopRatedMoviesPaginated = () => {
   return useInfiniteScrollMovies(
     () => movieAPI.getTopRated(1),
@@ -197,9 +169,6 @@ export const useTopRatedMoviesPaginated = () => {
   );
 };
 
-/**
- * Custom hook for fetching upcoming movies with infinite scroll
- */
 export const useUpcomingMoviesPaginated = () => {
   return useInfiniteScrollMovies(
     () => movieAPI.getUpcoming(1),
@@ -208,9 +177,6 @@ export const useUpcomingMoviesPaginated = () => {
   );
 };
 
-/**
- * Custom hook for fetching featured movie (first from trending)
- */
 export const useFeaturedMovie = () => {
   const [movie, setMovie] = useState(null);
   const [watchProviders, setWatchProviders] = useState({
@@ -231,7 +197,6 @@ export const useFeaturedMovie = () => {
           const featuredMovie = trendingData.results[0];
           setMovie(featuredMovie);
 
-          // Fetch watch providers for featured movie
           try {
             const providersData = await movieAPI.getWatchProviders(
               featuredMovie.id
@@ -240,7 +205,6 @@ export const useFeaturedMovie = () => {
             setWatchProviders(organized);
           } catch (providerError) {
             console.error("Error fetching watch providers:", providerError);
-            // Don't fail the whole request if providers fail
           }
         }
 
@@ -259,22 +223,13 @@ export const useFeaturedMovie = () => {
   return { movie, watchProviders, loading, error };
 };
 
-/**
- * Helper function to find high-resolution backdrop
- */
 const findHighResBackdrop = (backdrops) => {
   if (!backdrops || backdrops.length === 0) return null;
 
   const highResBackdrops = backdrops.filter((backdrop) => {
-    const width = backdrop.width;
-    const height = backdrop.height;
-    const aspectRatio = width / height;
-
-    // Check for 16:9 aspect ratio (approximately 1.777)
+    const aspectRatio = backdrop.width / backdrop.height;
     const is16to9 = Math.abs(aspectRatio - 16 / 9) < 0.1;
-    // Check for high resolution (width >= 1920)
-    const isHighRes = width >= 1920;
-
+    const isHighRes = backdrop.width >= 1920;
     return is16to9 && isHighRes;
   });
 
@@ -283,9 +238,6 @@ const findHighResBackdrop = (backdrops) => {
     : backdrops[0].file_path;
 };
 
-/**
- * Custom hook for fetching movie details
- */
 export const useMovieDetails = (movieId) => {
   const [movie, setMovie] = useState(null);
   const [genres, setGenres] = useState([]);
@@ -307,7 +259,6 @@ export const useMovieDetails = (movieId) => {
 
     const fetchMovieDetails = async () => {
       try {
-        // Reset all state when movie ID changes
         setMovie(null);
         setGenres([]);
         setCast([]);
@@ -318,26 +269,22 @@ export const useMovieDetails = (movieId) => {
         setBackdropImage(null);
         setLoading(true);
 
-        // Fetch main movie data
         const movieData = await movieAPI.getMovieDetails(movieId);
         setMovie(movieData);
         setGenres(movieData.genres || []);
         setCast(movieData.credits?.cast || []);
         setRecommendations(movieData.recommendations?.results || []);
 
-        // Extract certification
         if (movieData.release_dates?.results) {
           const cert = getUKCertification(movieData.release_dates);
           setCertification(cert);
         }
 
-        // Extract trailer
         if (movieData.videos?.results) {
           const trailer = getYouTubeTrailer(movieData.videos);
           setTrailerKey(trailer);
         }
 
-        // Fetch images to get alternative backdrop
         try {
           const imagesData = await movieAPI.getMovieImages(movieId);
           if (imagesData.backdrops?.length > 0) {
@@ -348,13 +295,11 @@ export const useMovieDetails = (movieId) => {
           }
         } catch (imagesError) {
           console.error("Error fetching images:", imagesError);
-          // Fallback to movie backdrop_path if images fetch fails
           if (movieData.backdrop_path) {
             setBackdropImage(movieData.backdrop_path);
           }
         }
 
-        // Fetch watch providers
         try {
           const providersData = await movieAPI.getWatchProviders(movieId);
           const organized = organizeWatchProviders(providersData);
@@ -389,9 +334,6 @@ export const useMovieDetails = (movieId) => {
   };
 };
 
-/**
- * Custom hook for searching movies with infinite scroll
- */
 export const useSearchMovies = (query) => {
   const [movies, setMovies] = useState([]);
   const [page, setPage] = useState(1);
@@ -440,7 +382,6 @@ export const useSearchMovies = (query) => {
     fetchInitial();
   }, [query]);
 
-  // Load more movies
   const loadMore = useCallback(async () => {
     if (loadingMore || !hasMore || !query || query.trim() === "") return;
 
@@ -475,4 +416,70 @@ export const useSearchMovies = (query) => {
     loadingMore,
     error,
   };
+};
+
+export const usePersonDetails = (personId) => {
+  const [person, setPerson] = useState(null);
+  const [credits, setCredits] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!personId) return;
+
+    const fetchPersonDetails = async () => {
+      try {
+        setPerson(null);
+        setCredits([]);
+        setLoading(true);
+
+        const personData = await personAPI.getPersonDetails(personId);
+        setPerson(personData);
+        setCredits(personData.movie_credits?.cast || []);
+
+        setError(null);
+      } catch (err) {
+        setError(err.message);
+        setPerson(null);
+        setCredits([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPersonDetails();
+  }, [personId]);
+
+  return {
+    person,
+    credits,
+    loading,
+    error,
+  };
+};
+
+export const useMovieCertification = (movieId) => {
+  const [certification, setCertification] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!movieId) return;
+
+    const fetchCertification = async () => {
+      try {
+        setLoading(true);
+        const releaseDatesData = await movieAPI.getReleaseDates(movieId);
+        const cert = getUKCertification(releaseDatesData);
+        setCertification(cert);
+      } catch (error) {
+        setCertification(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCertification();
+  }, [movieId]);
+
+  return { certification, loading };
 };

@@ -42,13 +42,11 @@ export const FilmPage = () => {
   const watchlistDisabled = watchlist.some((m) => m.id === movie?.id);
   const favouritesDisabled = favourites.some((m) => m.id === movie?.id);
 
-  // Scroll to top when movie ID changes
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
-    setBackdropLoaded(false); // Reset backdrop loaded state
+    setBackdropLoaded(false);
   }, [id]);
 
-  // Also scroll when movie data loads
   useEffect(() => {
     if (movie) {
       window.scrollTo({ top: 0, behavior: "instant" });
@@ -80,14 +78,12 @@ export const FilmPage = () => {
 
     const certUpper = cert.toUpperCase();
 
-    // UK certification colors
     if (certUpper === "U") return "bg-green-500";
     if (certUpper === "PG") return "bg-yellow-500";
     if (certUpper === "12" || certUpper === "12A") return "bg-blue-500";
     if (certUpper === "15") return "bg-orange-500";
     if (certUpper === "18") return "bg-red-500";
 
-    // Default for other certifications
     return "bg-gray-500";
   };
 
@@ -99,12 +95,11 @@ export const FilmPage = () => {
     );
   }
 
-  // Skeleton loading state
   if (loading || !movie) {
     return (
       <div className="min-h-screen">
         {/* Hero Section Skeleton */}
-        <section className="relative h-[100dvh] md:h-[85vh] min-h-[600px] flex items-end container-apple section-spacing mt-16 md:mt-0">
+        <section className="relative h-[100dvh] md:h-[85dvh] min-h-[600px] flex items-end container-apple section-spacing mt-16 md:mt-0">
           <div className="absolute inset-0 md:inset-0 -top-[5rem] md:top-0 bg-space-gray rounded-3xl overflow-hidden animate-pulse">
             <div className="absolute inset-0 bg-gradient-to-t from-space-gray via-space-gray/90 to-transparent" />
           </div>
@@ -183,7 +178,7 @@ export const FilmPage = () => {
       </Helmet>
 
       {/* Hero Section */}
-      <section className="relative h-[100dvh] md:h-[85vh] min-h-[600px] flex items-end container-apple section-spacing mt-16 md:mt-0">
+      <section className="relative h-[100dvh] md:h-[85dvh] min-h-[600px] flex items-end container-apple section-spacing mt-16 md:mt-0">
         <div
           className="absolute inset-0 md:inset-0 -top-[5rem] md:top-0 overflow-hidden"
           key={`backdrop-${movie.id}`}

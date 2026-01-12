@@ -13,22 +13,18 @@ export const GlassPagination = ({ currentPage, totalPages, onPageChange }) => {
     }
   };
 
-  // Calculate page numbers to show
   const getPageNumbers = () => {
     const pages = [];
     const maxVisible = 5;
 
     if (totalPages <= maxVisible) {
-      // Show all pages if total is less than max visible
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
       }
     } else {
-      // Show pages around current page
       let start = Math.max(1, currentPage - 2);
       let end = Math.min(totalPages, currentPage + 2);
 
-      // Adjust if we're near the start or end
       if (end - start < maxVisible - 1) {
         if (start === 1) {
           end = Math.min(totalPages, start + maxVisible - 1);
@@ -51,7 +47,6 @@ export const GlassPagination = ({ currentPage, totalPages, onPageChange }) => {
 
   return (
     <div className="flex items-center justify-center gap-2 py-8">
-      {/* Previous Button */}
       <button
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
@@ -61,9 +56,7 @@ export const GlassPagination = ({ currentPage, totalPages, onPageChange }) => {
         <span className="text-sm font-medium">Prev</span>
       </button>
 
-      {/* Page Numbers */}
       <div className="flex items-center gap-2">
-        {/* First page if not visible */}
         {pageNumbers[0] > 1 && (
           <>
             <button
@@ -78,7 +71,6 @@ export const GlassPagination = ({ currentPage, totalPages, onPageChange }) => {
           </>
         )}
 
-        {/* Visible page numbers */}
         {pageNumbers.map((page) => (
           <button
             key={page}
@@ -93,7 +85,6 @@ export const GlassPagination = ({ currentPage, totalPages, onPageChange }) => {
           </button>
         ))}
 
-        {/* Last page if not visible */}
         {pageNumbers[pageNumbers.length - 1] < totalPages && (
           <>
             {pageNumbers[pageNumbers.length - 1] < totalPages - 1 && (
@@ -109,7 +100,6 @@ export const GlassPagination = ({ currentPage, totalPages, onPageChange }) => {
         )}
       </div>
 
-      {/* Next Button */}
       <button
         onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages}

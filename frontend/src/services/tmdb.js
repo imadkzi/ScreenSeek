@@ -1,14 +1,6 @@
-/**
- * TMDB API Service Layer
- * Centralized API calls for The Movie Database
- */
-
 const API_BASE_URL = "https://api.themoviedb.org/3";
 const API_KEY = process.env.REACT_APP_TMDB_KEY;
 
-/**
- * Generic fetch function with error handling
- */
 const fetchFromTMDB = async (endpoint) => {
   try {
     const response = await fetch(
@@ -27,73 +19,59 @@ const fetchFromTMDB = async (endpoint) => {
   }
 };
 
-/**
- * Movie API Functions
- */
 export const movieAPI = {
-  // Get trending movies
   getTrending: (timeWindow = "day", page = 1, language = "en-US") => {
     return fetchFromTMDB(
       `/trending/movie/${timeWindow}?language=${language}&page=${page}`
     );
   },
 
-  // Get now playing movies
   getNowPlaying: (page = 1, language = "en-US", region = "GB") => {
     return fetchFromTMDB(
       `/movie/now_playing?language=${language}&page=${page}&region=${region}`
     );
   },
 
-  // Get upcoming movies
   getUpcoming: (page = 1, language = "en-US", region = "GB") => {
     return fetchFromTMDB(
       `/movie/upcoming?language=${language}&page=${page}&region=${region}`
     );
   },
 
-  // Get top rated movies
   getTopRated: (page = 1, language = "en-US") => {
     return fetchFromTMDB(`/movie/top_rated?language=${language}&page=${page}`);
   },
 
-  // Get popular movies
   getPopular: (page = 1, language = "en-US", region = "GB") => {
     return fetchFromTMDB(
       `/movie/popular?language=${language}&page=${page}&region=${region}`
     );
   },
 
-  // Get movie details
   getMovieDetails: (movieId, language = "en-US", region = "GB") => {
     return fetchFromTMDB(
       `/movie/${movieId}?language=${language}&region=${region}&append_to_response=release_dates,videos,credits,recommendations`
     );
   },
 
-  // Get movie videos (trailers, teasers, etc.)
   getMovieVideos: (movieId, language = "en-US") => {
     return fetchFromTMDB(`/movie/${movieId}/videos?language=${language}`);
   },
 
-  // Get watch providers
   getWatchProviders: (movieId, language = "en-US", region = "GB") => {
     return fetchFromTMDB(
       `/movie/${movieId}/watch/providers?language=${language}&region=${region}`
     );
   },
 
-  // Get release dates (for certifications)
   getReleaseDates: (movieId) => {
-    return fetchFromTMDB(`/movie/${movieId}/release_dates`);
+    return fetchFromTMDB(`/movie/${movieId}/release_dates?`);
   },
 
-  // Get movie images (backdrops, posters, etc.)
   getMovieImages: (movieId, language = "en") => {
     return fetchFromTMDB(`/movie/${movieId}/images?language=${language}`);
   },
 
-  // Search movies
   searchMovies: (query, page = 1, language = "en-US") => {
     return fetchFromTMDB(
       `/search/movie?query=${encodeURIComponent(
@@ -103,9 +81,14 @@ export const movieAPI = {
   },
 };
 
-/**
- * Helper function to extract UK certification
- */
+export const personAPI = {
+  getPersonDetails: (personId, language = "en-US") => {
+    return fetchFromTMDB(
+      `/person/${personId}?language=${language}&append_to_response=movie_credits`
+    );
+  },
+};
+
 export const getUKCertification = (releaseDatesData) => {
   if (!releaseDatesData?.results) return null;
 
@@ -122,9 +105,6 @@ export const getUKCertification = (releaseDatesData) => {
   return certifiedRelease?.certification || null;
 };
 
-/**
- * Helper function to extract YouTube trailer
- */
 export const getYouTubeTrailer = (videosData) => {
   if (!videosData?.results) return null;
 
@@ -135,9 +115,6 @@ export const getYouTubeTrailer = (videosData) => {
   return trailer?.key || null;
 };
 
-/**
- * Helper function to organize watch providers
- */
 export const organizeWatchProviders = (providersData) => {
   if (!providersData?.results?.GB) {
     return {

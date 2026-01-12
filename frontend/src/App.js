@@ -10,7 +10,7 @@ import { Upcoming } from "./Pages/Upcoming";
 import { TopRated } from "./Pages/TopRated";
 import { Search } from "./Pages/Search";
 import { FilmPage } from "./Pages/FilmPage";
-import { CastPage } from "./Components/CastPage";
+import { CastPage } from "./Pages/CastPage";
 import { WatchList } from "./Pages/WatchList";
 import { Favourites } from "./Pages/Favourites";
 import { Footer } from "./Components/Footer";

@@ -34,7 +34,7 @@
   }
   
   .container-apple {
-    @apply max-w-[1920px] mx-auto px-6 sm:px-8 lg:px-12;
+    @apply max-w-[100dvw] mx-auto px-6 sm:px-8 lg:px-12;
   }
   
   .section-spacing {

@@ -9,7 +9,7 @@ export const NavBar = () => {
   const [query, setQuery] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [focusedInput, setFocusedInput] = useState(null); // Track which input is focused
+  const [focusedInput, setFocusedInput] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
   const searchRef = useRef(null);
@@ -28,7 +28,7 @@ export const NavBar = () => {
     if (query.trim()) {
       setShowSuggestions(false);
       navigate(`/search?q=${encodeURIComponent(query)}`);
-      setQuery(""); // Clear search after navigation
+      setQuery("");
     }
   };
 
@@ -38,7 +38,6 @@ export const NavBar = () => {
     navigate(`/film/${movieId}`);
   };
 
-  // Close suggestions when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -60,7 +59,6 @@ export const NavBar = () => {
     };
   }, [showSuggestions]);
 
-  // Show suggestions when input is focused and has query
   const handleInputFocus = (inputType) => {
     setFocusedInput(inputType);
     if (query.trim().length >= 2) {

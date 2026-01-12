@@ -13,13 +13,11 @@ import {
 export const Home = () => {
   const [showWatchProviders, setShowWatchProviders] = useState(false);
 
-  // Fetch all movie data using custom hooks
   const { movie: featured, watchProviders } = useFeaturedMovie();
   const { movies: trending } = useTrendingMovies("week", 20);
   const { movies: upcoming } = useUpcomingMovies(20);
   const { movies: topRated } = useTopRatedMovies(20);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -40,7 +38,7 @@ export const Home = () => {
     <div className="min-h-screen">
       {/* Hero Section */}
       {featured && (
-        <section className="relative h-[85vh] min-h-[600px] flex items-end container-apple section-spacing">
+        <section className="relative h-[85dvh] min-h-[600px] flex items-end container-apple section-spacing">
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat overflow-hidden"
             style={{
