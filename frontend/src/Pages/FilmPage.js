@@ -99,13 +99,13 @@ export const FilmPage = () => {
     return (
       <div className="min-h-screen">
         {/* Hero Section Skeleton */}
-        <section className="relative h-[100dvh] md:h-[85dvh] min-h-[600px] flex items-end container-apple section-spacing mt-16 md:mt-0">
-          <div className="absolute inset-0 md:inset-0 -top-[5rem] md:top-0 bg-space-gray rounded-3xl overflow-hidden animate-pulse">
+        <section className="relative min-h-[100dvh] md:h-[85dvh] md:min-h-[600px] flex items-start md:items-end container-apple section-spacing md:overflow-hidden">
+          <div className="absolute inset-0 md:inset-0 -top-16 md:top-0 bg-space-gray rounded-3xl overflow-hidden animate-pulse">
             <div className="absolute inset-0 bg-gradient-to-t from-space-gray via-space-gray/90 to-transparent" />
           </div>
 
-          <div className="relative z-10 w-full md:pb-0">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
+          <div className="relative z-10 w-full pt-4 md:pt-0 pb-0 md:pb-12">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start md:items-end">
               {/* Poster Skeleton */}
               <div className="lg:col-span-3 flex justify-center lg:justify-start">
                 <div className="glass rounded-2xl overflow-hidden shadow-2xl w-full max-w-xs aspect-[2/3] bg-space-gray-light animate-pulse" />
@@ -143,7 +143,7 @@ export const FilmPage = () => {
         </section>
 
         {/* Content Sections Skeleton */}
-        <div className="container-apple space-y-12">
+        <div className="container-apple space-y-12 relative z-10 pt-8 md:pt-0">
           <div>
             <div className="h-8 w-48 bg-space-gray-light rounded-lg mb-6 animate-pulse" />
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3">
@@ -178,9 +178,9 @@ export const FilmPage = () => {
       </Helmet>
 
       {/* Hero Section */}
-      <section className="relative h-[100dvh] md:h-[85dvh] min-h-[600px] flex items-end container-apple section-spacing mt-16 md:mt-0">
+      <section className="relative min-h-[100dvh] md:h-[85dvh] md:min-h-[600px] flex items-start md:items-end container-apple section-spacing md:overflow-hidden">
         <div
-          className="absolute inset-0 md:inset-0 -top-[5rem] md:top-0 overflow-hidden"
+          className="absolute inset-0 md:inset-0 -top-16 md:top-0 overflow-hidden"
           key={`backdrop-${movie.id}`}
         >
           {/* Placeholder while loading */}
@@ -210,8 +210,8 @@ export const FilmPage = () => {
           <div className="absolute inset-0 bg-gradient-to-t from-space-gray via-space-gray/90 to-transparent" />
         </div>
 
-        <div className="relative z-10 w-full md:pb-0">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
+        <div className="relative z-10 w-full pt-4 md:pt-0 pb-0 md:pb-12">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start md:items-end">
             {/* Poster */}
             <div className="lg:col-span-3 flex justify-center lg:justify-start">
               <div className="glass rounded-2xl overflow-hidden shadow-2xl">
@@ -281,9 +281,7 @@ export const FilmPage = () => {
               )}
 
               {/* Overview */}
-              <p className="text-lg text-gray-300 mb-6 line-clamp-3">
-                {movie.overview}
-              </p>
+              <p className="text-lg text-gray-300 mb-6">{movie.overview}</p>
 
               {/* Action Buttons */}
               <div className="flex gap-3 flex-wrap mb-6">
@@ -345,7 +343,7 @@ export const FilmPage = () => {
       )}
 
       {/* Content Sections */}
-      <div className="container-apple space-y-12">
+      <div className="container-apple space-y-12 relative z-10">
         {/* Watch Providers Grid */}
         {(watchProviders.flatrate.length > 0 ||
           watchProviders.rent.length > 0 ||
