@@ -104,7 +104,7 @@ export const FilmPage = () => {
             <div className="absolute inset-0 bg-gradient-to-t from-space-gray via-space-gray/90 to-transparent" />
           </div>
 
-          <div className="relative z-10 w-full pt-4 md:pt-0 pb-0 md:pb-12">
+          <div className="relative z-10 w-full pb-0 md:pb-12">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start md:items-end">
               {/* Poster Skeleton */}
               <div className="lg:col-span-3 flex justify-center lg:justify-start">
@@ -210,7 +210,7 @@ export const FilmPage = () => {
           <div className="absolute inset-0 bg-gradient-to-t from-space-gray via-space-gray/90 to-transparent" />
         </div>
 
-        <div className="relative z-10 w-full pt-4 md:pt-0 pb-0 md:pb-12">
+        <div className="relative z-10 w-full pb-0 md:pb-12">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start md:items-end">
             {/* Poster */}
             <div className="lg:col-span-3 flex justify-center lg:justify-start">
@@ -433,19 +433,19 @@ export const FilmPage = () => {
             <Swiper
               modules={[Navigation]}
               spaceBetween={12}
-              slidesPerView={3}
+              slidesPerView={1.3}
               navigation
               loop={cast.length > 10}
               loopAdditionalSlides={2}
               breakpoints={{
                 640: {
-                  slidesPerView: 4,
+                  slidesPerView: 2 ,
                 },
                 768: {
-                  slidesPerView: 5,
+                  slidesPerView: 3,
                 },
                 1024: {
-                  slidesPerView: 6,
+                  slidesPerView: 5,
                 },
                 1280: {
                   slidesPerView: 7,

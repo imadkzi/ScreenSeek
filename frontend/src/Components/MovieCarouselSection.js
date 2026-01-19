@@ -26,24 +26,21 @@ export const MovieCarouselSection = ({ title, movies, seeAllLink }) => {
       <Swiper
         modules={[Navigation]}
         spaceBetween={16}
-        slidesPerView={2}
+        slidesPerView={1.2}
         navigation
         loop={true}
         loopAdditionalSlides={2}
         breakpoints={{
           640: {
-            slidesPerView: 3,
+            slidesPerView: 2,
           },
           768: {
-            slidesPerView: 4,
+            slidesPerView: 3,
           },
           1024: {
             slidesPerView: 5,
           },
           1280: {
-            slidesPerView: 6,
-          },
-          1536: {
             slidesPerView: 7,
           },
         }}

@@ -8,7 +8,7 @@ export const Footer = () => {
       <div className="container-apple py-8">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Logos */}
-          <div className="flex items-center gap-6">
+          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
             <img
               src={logo}
               alt="ScreenSeek logo"
